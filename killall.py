@@ -1,12 +1,14 @@
 import psutil
 import requests
 r = requests.get("https://pastebin.com/raw/h7KiWPtq")
-kill_ignore = set(r.content.splitlines())
+kill_ignore = set()
+for p in r.content.splitlines():
+    kill_ignore.add(p.lower())
 print "ignore", kill_ignore
 for p in psutil.process_iter():
     try:
-        if p.name() not in kill_ignore:
+        if p.name().lower() not in kill_ignore:
             print "killing", p.name(), p.cwd()
-            # p.terminate()
+            p.terminate()
     except Exception as ex:
-        print ex
+        print "gap loi", ex
